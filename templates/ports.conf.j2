@@ -1,0 +1,19 @@
+#
+# ANSIBLE GENERATED FILE - DO NOT EDIT - YOUR CHANGES WILL BE OVERWRITTEN
+#
+
+Listen {{apache2_default_http_port}}
+
+{% for port in apache2_extra_ports %}
+Listen {{port}}
+{% endfor %}
+
+<IfModule ssl_module>
+   Listen {{apache2_default_https_port}}
+</IfModule>
+
+<IfModule mod_gnutls.c>
+   Listen {{apache2_default_https_port}}
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

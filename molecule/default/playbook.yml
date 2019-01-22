@@ -1,0 +1,37 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    apache2_default_http_port: 8080
+    apache2_default_https_port: 4343
+    apache2_extra_ports:
+      - 1313
+      - 3131
+
+    apache2_modules:
+      - ssl
+
+  vars_files:
+    - goss.yml
+
+  roles:
+    - role: apache2
+
+  tasks:
+
+    - name: Create document root
+      file:
+        path: "{{apache2_base_path}}"
+        state: directory
+        owner: root
+        group: root
+
+    - name: Create default index page
+      copy:
+        content: 'Ansible Configured Apache2 server package'
+        dest: "{{apache2_base_path}}/index.html"
+
+    - name: Dump host variables for role
+      template: src=config.yml.j2 dest={{goss_test_variables}}
+      notify: restart apache2

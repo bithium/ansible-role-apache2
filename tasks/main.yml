@@ -1,0 +1,51 @@
+---
+# tasks file for apache2
+
+- name: Install required packages
+  package: name={{apache2_packages}}
+
+- name: Configure listen ports
+  template:
+    src: ports.conf.j2
+    dest: "{{apache2_config_path}}/ports.conf"
+    owner: "{{apache2_user}}"
+    group: "{{apache2_group}}"
+  notify: restart apache2
+
+- name: Update HTTP port in default host
+  replace:
+    path: "{{apache2_default_host_path}}"
+    regexp: :80>
+    replace: ":{{apache2_default_http_port}}>"
+  when: apache2_default_http_port != 80
+
+- name: Update HTTPS port in default-ssl host
+  replace:
+    path: "{{apache2_default_ssl_host_path}}"
+    regexp: :443
+    replace: ":{{apache2_default_https_port}}"
+  when: apache2_enable_ssl and apache2_default_https_port != 443
+
+- name: Enable default HTTPS host
+  command: a2ensite default-ssl
+  when: apache2_enable_ssl and not apache2_remove_default
+
+- name: Disable default host configuration
+  command: a2dissite {{item | basename}}
+  when: apache2_remove_default
+  loop:
+    - "{{apache2_default_host_path}}"
+    - "{{apache2_default_ssl_host_path}}"
+
+- name: Enable modules
+  apache2_module:
+    name: "{{item}}"
+  loop: "{{apache2_modules}}"
+  when: apache2_modules is defined
+  notify: restart apache2
+
+- name: Enable and start Apache2 service
+  service:
+    name: "{{apache2_service}}"
+    enabled: true
+    state: started

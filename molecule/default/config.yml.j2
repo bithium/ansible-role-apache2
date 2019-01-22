@@ -1,0 +1,9 @@
+---
+apache2:
+   packages: {{apache2_packages | to_json}}
+   service: {{apache2_service | quote}}
+   config: {{apache2_config_path | quote}}
+   ports:
+     http: {{apache2_default_http_port}}
+     https: {{apache2_default_https_port}}
+     extra: {{ apache2_extra_ports | to_json}}
