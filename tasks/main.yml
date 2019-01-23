@@ -26,6 +26,8 @@
 
 - name: Enable default HTTPS host
   command: a2ensite default-ssl
+  args:
+    creates: "{{apache2_sites_enabled_path}}/{{apache2_default_ssl_host_path | basename}}"
   when: apache2_enable_ssl and not apache2_remove_default
 
 - name: Disable default host configuration

@@ -41,7 +41,15 @@ Available variables are listed below, along with default values (see `defaults/m
 
  * Path to the available modules:
 
-   `apache2_modules_available_path: "{{apache2_config_path}}/sites-available"`
+   `apache2_modules_available_path: "{{apache2_config_path}}/modules-available"`
+
+ * Path to the enabled sites:
+
+   `apache2_sites_enabled_path: "{{apache2_config_path}}/sites-enabled"`
+
+ * Path to the enabled modules:
+
+   `apache2_modules_enabled_path: "{{apache2_config_path}}/modules-enabled"`
 
  * Path to the default host file:
 
