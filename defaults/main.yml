@@ -17,7 +17,7 @@ apache2_modules_available_path: "{{apache2_config_path}}/sites-available"
 apache2_default_host_path: "{{apache2_sites_available_path}}/000-default.conf"
 apache2_default_ssl_host_path: "{{apache2_sites_available_path}}/default-ssl.conf"
 
-apache2_base_path: "/var/www/html/"
+apache2_base_path: "/var/www/html"
 
 apache2_default_http_port: 80
 apache2_default_https_port: 443

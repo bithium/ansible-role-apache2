@@ -8,8 +8,6 @@
   template:
     src: ports.conf.j2
     dest: "{{apache2_config_path}}/ports.conf"
-    owner: "{{apache2_user}}"
-    group: "{{apache2_group}}"
   notify: restart apache2
 
 - name: Update HTTP port in default host
