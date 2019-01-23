@@ -3,11 +3,11 @@
   hosts: all
 
   vars:
-    apache2_default_http_port: 8080
-    apache2_default_https_port: 4343
+    apache2_default_http_port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
+    apache2_default_https_port: "{{ 4340 + play_hosts.index(inventory_hostname) }}"
     apache2_extra_ports:
-      - 1313
-      - 3131
+      - "{{ 1310 + play_hosts.index(inventory_hostname) }}"
+      - "{{ 3130 + play_hosts.index(inventory_hostname) }}"
 
     apache2_modules:
       - ssl
