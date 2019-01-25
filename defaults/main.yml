@@ -12,13 +12,15 @@ apache2_group: www-data
 apache2_config_path: "/etc/{{apache2_service}}"
 
 apache2_sites_available_path: "{{apache2_config_path}}/sites-available"
-apache2_modules_available_path: "{{apache2_config_path}}/modules-available"
+apache2_modules_available_path: "{{apache2_config_path}}/mods-available"
+apache2_config_available_path: "{{apache2_config_path}}/conf-available"
 
 apache2_default_host_path: "{{apache2_sites_available_path}}/000-default.conf"
 apache2_default_ssl_host_path: "{{apache2_sites_available_path}}/default-ssl.conf"
 
 apache2_sites_enabled_path: "{{apache2_config_path}}/sites-enabled"
-apache2_modules_enabled_path: "{{apache2_config_path}}/modules-enabled"
+apache2_modules_enabled_path: "{{apache2_config_path}}/mods-enabled"
+apache2_config_enabled_path: "{{apache2_config_path}}/conf-enabled"
 
 apache2_base_path: "/var/www/html"
 
