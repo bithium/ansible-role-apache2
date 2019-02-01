@@ -1,8 +1,10 @@
 ---
 # defaults file for apache2
 
-apache2_packages:
+apache2_packages_default:
   - apache2
+
+apache2_packages: []
 
 apache2_service: apache2
 

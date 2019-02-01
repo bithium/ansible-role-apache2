@@ -2,7 +2,7 @@
 # tasks file for apache2
 
 - name: Install required packages
-  package: name={{apache2_packages}}
+  package: name={{apache2_packages_default | union(apache2_packages)}}
 
 - name: Configure listen ports
   template:
