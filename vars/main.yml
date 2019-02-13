@@ -1,2 +1,9 @@
 ---
 # vars file for apache2
+
+apache2_config_file: "{{apache2_config_path}}/{{apache2_config_file_names[ansible_os_family]}}"
+
+apache2_user: "{{apache2_user_names[ansible_os_family]}}"
+apache2_group: www-data
+
+apache2_log_path: "{{apache2_log_paths[ansible_os_family]}}"

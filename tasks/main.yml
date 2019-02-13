@@ -4,45 +4,56 @@
 - name: Install required packages
   package: name={{apache2_packages_default | union(apache2_packages)}}
 
+- include_tasks: "{{ansible_os_family | lower}}.yml"
+
 - name: Configure listen ports
   template:
     src: ports.conf.j2
     dest: "{{apache2_config_path}}/ports.conf"
   notify: restart apache2
 
-- name: Update HTTP port in default host
-  replace:
-    path: "{{apache2_default_host_path}}"
-    regexp: :80>
-    replace: ":{{apache2_default_http_port}}>"
-  when: apache2_default_http_port != 80
+- name: Create default HTTP site
+  template:
+    src: default.conf
+    dest: "{{apache2_default_host_path}}"
+  when: apache2_create_default
 
-- name: Update HTTPS port in default-ssl host
-  replace:
-    path: "{{apache2_default_ssl_host_path}}"
-    regexp: :443
-    replace: ":{{apache2_default_https_port}}"
-  when: apache2_enable_ssl and apache2_default_https_port != 443
+- name: Create default HTTPS site
+  template:
+    src: default-ssl.conf
+    dest: "{{apache2_default_ssl_host_path}}"
+  when: apache2_create_default_ssl
 
-- name: Enable default HTTPS host
-  command: a2ensite default-ssl
-  args:
-    creates: "{{apache2_sites_enabled_path}}/{{apache2_default_ssl_host_path | basename}}"
-  when: apache2_enable_ssl and not apache2_remove_default
+- name: Create document root
+  file:
+    path: "{{apache2_base_path}}"
+    state: directory
+    owner: "{{apache2_user}}"
+    group: "{{apache2_group}}"
+  when: apache2_create_default or apache2_create_default_ssl
 
-- name: Disable default host configuration
-  command: a2dissite {{item | basename}}
-  when: apache2_remove_default
-  loop:
-    - "{{apache2_default_host_path}}"
-    - "{{apache2_default_ssl_host_path}}"
+- name: Create empty default page
+  file:
+    path: "{{apache2_base_path}}/index.html"
+    owner: "{{apache2_user}}"
+    group: "{{apache2_group}}"
+    state: touch
+  changed_when: false
+  when: apache2_create_default or apache2_create_default_ssl
 
-- name: Enable modules
-  apache2_module:
-    name: "{{item}}"
-  loop: "{{apache2_modules}}"
-  when: apache2_modules is defined
-  notify: restart apache2
+- name: Enable default HTTP site
+  file:
+    src: "{{apache2_default_host_path}}"
+    dest: "{{apache2_sites_enabled_path}}/000-default.conf"
+    state: link
+  when: apache2_create_default
+
+- name: Enable default HTTPS site
+  file:
+    src: "{{apache2_default_ssl_host_path}}"
+    dest: "{{apache2_sites_enabled_path}}/000-default_ssl.conf"
+    state: link
+  when: apache2_create_default_ssl
 
 - name: Enable and start Apache2 service
   service:

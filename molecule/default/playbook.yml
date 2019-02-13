@@ -11,6 +11,19 @@
 
     apache2_modules:
       - ssl
+      - socache_shmcb
+
+    apache2_create_default: true
+    apache2_create_default_ssl: true
+
+    apache2_certificate_paths:
+      Debian: /etc/ssl/certs/ssl-cert-snakeoil.pem
+
+    apache2_certificate_key_paths:
+      Debian: /etc/ssl/private/ssl-cert-snakeoil.key
+
+    apache2_certificate_file: "{{apache2_certificate_paths[ansible_os_family]}}"
+    apache2_certificate_key_file: "{{apache2_certificate_key_paths[ansible_os_family]}}"
 
   vars_files:
     - goss.yml
@@ -19,13 +32,6 @@
     - role: apache2
 
   tasks:
-
-    - name: Create document root
-      file:
-        path: "{{apache2_base_path}}"
-        state: directory
-        owner: root
-        group: root
 
     - name: Create default index page
       copy:
