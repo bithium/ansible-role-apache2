@@ -1,0 +1,76 @@
+---
+
+- name: Tweak init file for Apache2 on Alpine
+  lineinfile:
+    path: /etc/init.d/apache2
+    regexp: '.+need net'
+    state: absent
+  notify: restart apache2
+  when: ansible_connection == 'docker'
+
+- name: Read ports from configuration file
+  block:
+    - name: Remove Listen directives from main configuration file
+      lineinfile:
+        path: "{{apache2_config_file}}"
+        regexp: '^Listen'
+        state: absent
+
+    - name: Add include for ports.conf file
+      lineinfile:
+        path: "{{apache2_config_file}}"
+        line: "Include {{apache2_config_path}}/ports.conf"
+
+- name: Create configuration paths
+  file:
+    path: "{{item}}"
+    owner: root
+    group: root
+    state: directory
+  loop:
+    - "{{apache2_sites_available_path}}"
+    - "{{apache2_modules_available_path}}"
+    - "{{apache2_config_available_path}}"
+    - "{{apache2_sites_enabled_path}}"
+    - "{{apache2_modules_enabled_path}}"
+    - "{{apache2_config_enabled_path}}"
+
+- name: Ensure configuration files are included
+  lineinfile:
+    path: "{{apache2_config_file}}"
+    regexp: '{{item.path}}/\*\.{{item.ext}}'
+    line: "IncludeOptional {{apache2_config_path}}/{{item.path}}/*.{{item.ext}}"
+  loop:
+    - path: mods-enabled
+      ext: load
+    - path: mods-enabled
+      ext: conf
+    - path: conf-enabled
+      ext: conf
+    - path: sites-enabled
+      ext: conf
+
+- name: Enable modules
+  block:
+    - name: Tweak SSL distribution configuration
+      lineinfile:
+        path: "{{apache2_config_path}}/conf.d/ssl.conf"
+        regexp: 'Listen 443'
+        state: absent
+      when: "'ssl' in apache2_modules"
+
+    - name: Create module load configuration file
+      copy:
+        dest: "{{apache2_modules_available_path}}/{{item}}.load"
+        content: |
+          <IfModule !{{item}}_module>
+            LoadModule {{item}}_module /usr/lib/apache2/mod_{{item}}.so
+          </IfModule>
+      loop: "{{apache2_modules}}"
+
+    - name: Enable module load file
+      file:
+        src: "{{apache2_modules_available_path}}/{{item}}.load"
+        dest: "{{apache2_modules_enabled_path}}/{{item}}.load"
+        state: link
+      loop: "{{apache2_modules}}"

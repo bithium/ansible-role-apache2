@@ -3,8 +3,12 @@
   hosts: all
 
   vars:
-    apache2_default_http_port: "{{ 8080 + play_hosts.index(inventory_hostname) }}"
-    apache2_default_https_port: "{{ 4340 + play_hosts.index(inventory_hostname) }}"
+    apache2_default_http_port: >-
+      {{ 8080 + play_hosts.index(inventory_hostname) }}
+
+    apache2_default_https_port: >-
+      {{ 4340 + play_hosts.index(inventory_hostname) }}
+
     apache2_extra_ports:
       - "{{ 1310 + play_hosts.index(inventory_hostname) }}"
       - "{{ 3130 + play_hosts.index(inventory_hostname) }}"
@@ -17,13 +21,25 @@
     apache2_create_default_ssl: true
 
     apache2_certificate_paths:
+      Alpine: /etc/ssl/apache2/server.pem
       Debian: /etc/ssl/certs/ssl-cert-snakeoil.pem
 
     apache2_certificate_key_paths:
+      Alpine: /etc/ssl/apache2/server.key
       Debian: /etc/ssl/private/ssl-cert-snakeoil.key
 
-    apache2_certificate_file: "{{apache2_certificate_paths[ansible_os_family]}}"
-    apache2_certificate_key_file: "{{apache2_certificate_key_paths[ansible_os_family]}}"
+    apache2_certificate_file: >-
+      {{apache2_certificate_paths[ansible_os_family]}}
+
+    apache2_certificate_key_file: >-
+      {{apache2_certificate_key_paths[ansible_os_family]}}
+
+    apache2_os_packages:
+      Alpine:
+        - apache2-ssl
+
+    apache2_packages: >-
+      {{apache2_os_packages[ansible_os_family] | default([])}}
 
   vars_files:
     - goss.yml
@@ -38,6 +54,11 @@
         content: 'Ansible Configured Apache2 server package'
         dest: "{{apache2_base_path}}/index.html"
 
+    - name: Ensure new configuration is picked out
+      service:
+        name: "{{apache2_service}}"
+        state: restarted
+      changed_when: false
+
     - name: Dump host variables for role
       template: src=config.yml.j2 dest={{goss_test_variables}}
-      notify: restart apache2

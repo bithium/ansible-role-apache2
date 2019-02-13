@@ -6,4 +6,6 @@ apache2_config_file: "{{apache2_config_path}}/{{apache2_config_file_names[ansibl
 apache2_user: "{{apache2_user_names[ansible_os_family]}}"
 apache2_group: www-data
 
+apache2_base_path: "{{apache2_base_paths[ansible_os_family]}}"
+
 apache2_log_path: "{{apache2_log_paths[ansible_os_family]}}"
