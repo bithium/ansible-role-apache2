@@ -55,8 +55,7 @@
     state: link
   when: apache2_create_default_ssl
 
-- name: Enable and start Apache2 service
+- name: Enable Apache2 service
   service:
     name: "{{apache2_service}}"
     enabled: true
-    state: started
