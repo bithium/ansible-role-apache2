@@ -12,6 +12,12 @@
     dest: "{{apache2_config_path}}/ports.conf"
   notify: restart apache2
 
+- name: Add ansible configuration
+  template:
+    src: ansible.conf.j2
+    dest: "{{apache2_config_enabled_path}}/99_ansible.conf"
+  notify: restart apache2
+
 - name: Create default HTTP site
   template:
     src: default.conf
