@@ -1,0 +1,63 @@
+# Molecule managed
+---
+package:
+{{range .Vars.apache2.packages}}
+  {{.}}:
+    installed: true
+{{end}}
+
+service:
+  {{.Vars.apache2.service}}:
+    enabled: true
+    running: true
+
+port:
+  tcp:{{.Vars.apache2.ports.http}}:
+    listening: true
+
+  tcp:{{.Vars.apache2.ports.https}}:
+    listening: true
+
+{{range .Vars.apache2.ports.extra}}
+  tcp:{{.}}:
+    listening: true
+{{end}}
+
+file:
+  {{.Vars.apache2.config}}/sites-available/000-default.conf:
+    exists: true
+    filetype: file
+    contains:
+      - :{{.Vars.apache2.ports.http}}
+
+  {{.Vars.apache2.config}}/sites-enabled/000-default.conf:
+    exists: true
+    filetype: symlink
+
+  {{.Vars.apache2.config}}/sites-available/000-default_ssl.conf:
+    exists: true
+    filetype: file
+    contains:
+      - :{{.Vars.apache2.ports.https}}
+
+  {{.Vars.apache2.config}}/sites-enabled/000-default_ssl.conf:
+    exists: true
+    filetype: symlink
+
+http:
+  http://localhost:{{.Vars.apache2.ports.http}}:
+    # required attributes
+    status: 200
+    # optional attributes
+    timeout: 1000
+    body:
+      - Ansible Configured Apache2 server package
+
+  https://localhost:{{.Vars.apache2.ports.https}}:
+    # required attributes
+    status: 200
+    allow-insecure: true
+    # optional attributes
+    timeout: 1000
+    body:
+      - Ansible Configured Apache2 server package
