@@ -1,0 +1,17 @@
+# Apache2 role Debian OS family configuration values.
+---
+apache2_packages_default:
+  - apache2
+
+apache2_service: apache2
+
+apache2_user: www-data
+apache2_group: www-data
+
+apache2_config_path: /etc/{{apache2_service}}
+apache2_config_file: "{{apache2_config_path}}/apache2.conf"
+
+apache2_lib_path: lib/apache2
+apache2_log_path: /var/log/apache2
+
+apache2_base_path: /var/www

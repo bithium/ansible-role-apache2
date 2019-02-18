@@ -1,6 +1,16 @@
 ---
 # tasks file for apache2
 
+- name: Include OS specific configuration values
+  include_vars: "{{lookup('first_found', params)}}"
+  vars:
+    params:
+      files:
+        - "{{ansible_distribution | lower}}.yml"
+        - "{{ansible_os_family | lower}}.yml"
+      paths:
+        - vars
+
 - name: Install required packages
   package: name={{apache2_packages_default | union(apache2_packages)}}
 
