@@ -23,10 +23,12 @@
     apache2_certificate_paths:
       Alpine: /etc/ssl/apache2/server.pem
       Debian: /etc/ssl/certs/ssl-cert-snakeoil.pem
+      Solaris: /opt/local/etc/ssl/httpd/server.pem
 
     apache2_certificate_key_paths:
       Alpine: /etc/ssl/apache2/server.key
       Debian: /etc/ssl/private/ssl-cert-snakeoil.key
+      Solaris: /opt/local/etc/ssl/httpd/server.key
 
     apache2_certificate_file: >-
       {{apache2_certificate_paths[ansible_os_family]}}

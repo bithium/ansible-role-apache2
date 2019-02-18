@@ -6,7 +6,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: apache2-smartos-1
+  - name: apache2-smartos
     image_uuid: 'c2c31b00-1d60-11e9-9a77-ff9f06554b0f'
     groups:
       - smartos
@@ -25,7 +25,6 @@ provisioner:
   playbooks:
     prepare: ../common/prepare.yml
     converge: ../common/playbook.yml
-    verify: ../common/verify.yml
   lint:
     name: ansible-lint
 scenario:

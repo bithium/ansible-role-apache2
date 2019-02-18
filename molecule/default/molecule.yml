@@ -90,7 +90,6 @@ provisioner:
   playbooks:
     prepare: ../common/prepare.yml
     converge: ../common/playbook.yml
-    verify: ../common/verify.yml
   lint:
     name: ansible-lint
 scenario:

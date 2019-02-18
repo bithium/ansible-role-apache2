@@ -6,7 +6,6 @@
 
   vars:
     ssh_identity_file: "{{molecule_ephemeral_directory}}/molecule_ssh_key"
-    ssh_config_file: "{{molecule_ephemeral_directory}}/molecule_ssh_config"
 
   tasks:
 
@@ -40,12 +39,12 @@
           - nic_tag: admin
             ip: dhcp
             primary: true
-        internal_metadata:
-          root_pw: root
         resolvers:
           - 1.1.1.1
           - 8.8.8.8
           - 8.8.4.4
+        internal_metadata:
+          root_pw: root
         customer_metadata:
           root_authorized_keys: "{{lookup('file', ssh_identity_file + '.pub')}}"
           user-script: >-

@@ -1,13 +1,24 @@
 ---
 # vars file for apache2
 
-apache2_config_file: "{{apache2_config_path}}/{{apache2_config_file_names[ansible_os_family]}}"
+apache2_packages_default:
+  - "{{apache2_os_packages_defaults[ansible_os_family] | default('apache2')}}"
 
-apache2_user: "{{apache2_user_names[ansible_os_family]}}"
-apache2_group: www-data
+apache2_config_path: >-
+  {{apache2_os_config_path_defaults[ansible_os_family] | default('/etc/' + apache2_service)}}
 
-apache2_base_path: "{{apache2_base_paths[ansible_os_family]}}"
+apache2_config_file: >-
+  {{apache2_config_path}}/{{apache2_os_config_file_names[ansible_os_family]}}
 
-apache2_log_path: "{{apache2_log_paths[ansible_os_family]}}"
+apache2_service: >-
+  {{apache2_os_service_defaults[ansible_os_family] | default('apache2')}}
+
+apache2_user: "{{apache2_os_user_names[ansible_os_family]}}"
+apache2_group: "{{apache2_os_group_names[ansible_os_family] | default('www-data')}}"
+
+apache2_base_path: "{{apache2_os_base_paths[ansible_os_family]}}"
+apache2_lib_path: "{{apache2_os_lib_paths[ansible_os_family]}}"
+
+apache2_log_path: "{{apache2_os_log_paths[ansible_os_family]}}"
 
 apache2_config: "{{apache2_config_default}}"

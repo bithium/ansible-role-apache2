@@ -1,26 +1,39 @@
 ---
 # defaults file for apache2
 
-apache2_packages_default:
-  - apache2
+apache2_os_packages_defaults:
+  Solaris: apache
 
 apache2_packages: []
 
-apache2_service: apache2
+apache2_os_service_defaults:
+  Solaris: apache
 
-apache2_user_names:
+apache2_os_user_names:
   Alpine: apache
   Debian: www-data
+  Solaris: www
 
-apache2_config_file_names:
+apache2_os_group_names:
+  Solaris: www
+
+apache2_os_config_file_names:
   Alpine: httpd.conf
   Debian: apache2.conf
+  Solaris: httpd.conf
 
-apache2_log_paths:
-  Alpine: "/var/www/logs"
-  Debian: "/var/log/apache2"
+apache2_os_log_paths:
+  Alpine: /var/www/logs
+  Debian: /var/log/apache2
+  Solaris: /var/log/httpd
 
-apache2_config_path: "/etc/{{apache2_service}}"
+apache2_os_lib_paths:
+  Alpine: lib/apache2
+  Debian: lib/apache2
+  Solaris: lib/httpd
+
+apache2_os_config_path_defaults:
+  Solaris: /opt/local/etc/httpd
 
 apache2_sites_available_path: "{{apache2_config_path}}/sites-available"
 apache2_modules_available_path: "{{apache2_config_path}}/mods-available"
@@ -33,9 +46,10 @@ apache2_sites_enabled_path: "{{apache2_config_path}}/sites-enabled"
 apache2_modules_enabled_path: "{{apache2_config_path}}/mods-enabled"
 apache2_config_enabled_path: "{{apache2_config_path}}/conf-enabled"
 
-apache2_base_paths:
+apache2_os_base_paths:
   Alpine: /var/www/localhost/htdocs
   Debian: /var/www/html
+  Solaris: /var/www/html
 
 apache2_default_http_port: 80
 apache2_default_https_port: 443

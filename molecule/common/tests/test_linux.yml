@@ -1,0 +1,24 @@
+# Molecule managed
+---
+package:
+{{range .Vars.apache2.packages}}
+  {{.}}:
+    installed: true
+{{end}}
+
+service:
+  {{.Vars.apache2.service}}:
+    enabled: true
+    running: true
+
+port:
+  tcp:{{.Vars.apache2.ports.http}}:
+    listening: true
+
+  tcp:{{.Vars.apache2.ports.https}}:
+    listening: true
+
+{{range .Vars.apache2.ports.extra}}
+  tcp:{{.}}:
+    listening: true
+{{end}}
