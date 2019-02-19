@@ -11,7 +11,7 @@ apache2_group: www-data
 apache2_config_path: /etc/{{apache2_service}}
 apache2_config_file: "{{apache2_config_path}}/httpd.conf"
 
-apache2_lib_path: lib/apache2
+apache2_lib_path: modules
 apache2_log_path: /var/log/apache2
 
 apache2_base_path: /var/www/localhost/htdocs
