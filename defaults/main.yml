@@ -1,6 +1,8 @@
 ---
 # defaults file for apache2
 
+apache2_packages: []
+
 apache2_default_http_port: 80
 apache2_default_https_port: 443
 
