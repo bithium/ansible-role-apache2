@@ -30,6 +30,13 @@ http:
     body:
       - Ansible Configured Apache2 server package
 
+  http://localhost:{{.Vars.apache2.ports.http}}:
+    # required attributes
+    status: 301
+    # optional attributes
+    timeout: 1000
+    no-follow-redirects: true
+
   https://localhost:{{.Vars.apache2.ports.https}}:
     # required attributes
     status: 200

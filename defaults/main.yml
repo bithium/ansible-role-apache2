@@ -14,8 +14,10 @@ apache2_create_default_ssl: false
 # apache2_certificate_file:
 # apache2_certificate_key_file:
 
-# apache2_modules: []
+apache2_modules: []
 
 apache2_config_default:
   - 'ServerSignature Off'
   - 'ServerTokens Prod'
+
+apache2_https_redirect: false

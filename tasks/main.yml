@@ -14,6 +14,16 @@
 - name: Install required packages
   package: name={{apache2_packages_default | union(apache2_packages)}}
 
+- name: Add required modules to list (HTTP to HTTPS redirect)
+  set_fact:
+    apache2_modules: "{{ apache2_modules | union(['rewrite']) }}"
+  when: apache2_https_redirect
+
+- name: Add required modules to list (SSL support)
+  set_fact:
+    apache2_modules: "{{ apache2_modules | union(['ssl', 'socache_shmcb']) }}"
+  when: apache2_create_default_ssl
+
 - include_tasks: "{{lookup('first_found', params)}}"
   vars:
     params:
@@ -38,13 +48,13 @@
 
 - name: Create default HTTP site
   template:
-    src: default.conf
+    src: default.conf.j2
     dest: "{{apache2_default_host_path}}"
   when: apache2_create_default
 
 - name: Create default HTTPS site
   template:
-    src: default-ssl.conf
+    src: default-ssl.conf.j2
     dest: "{{apache2_default_ssl_host_path}}"
   when: apache2_create_default_ssl
 
@@ -54,15 +64,6 @@
     state: directory
     owner: "{{apache2_user}}"
     group: "{{apache2_group}}"
-  when: apache2_create_default or apache2_create_default_ssl
-
-- name: Create empty default page
-  file:
-    path: "{{apache2_base_path}}/index.html"
-    owner: "{{apache2_user}}"
-    group: "{{apache2_group}}"
-    state: touch
-  changed_when: false
   when: apache2_create_default or apache2_create_default_ssl
 
 - name: Enable default HTTP site

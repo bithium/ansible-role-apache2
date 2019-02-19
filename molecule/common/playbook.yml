@@ -13,12 +13,10 @@
       - "{{ 1310 + play_hosts.index(inventory_hostname) }}"
       - "{{ 3130 + play_hosts.index(inventory_hostname) }}"
 
-    apache2_modules:
-      - ssl
-      - socache_shmcb
-
     apache2_create_default: true
     apache2_create_default_ssl: true
+
+    apache2_https_redirect: true
 
     apache2_certificate_paths:
       Alpine: /etc/ssl/apache2/server.pem
@@ -56,11 +54,11 @@
         content: 'Ansible Configured Apache2 server package'
         dest: "{{apache2_base_path}}/index.html"
 
-    - name: Ensure new configuration is picked out
-      service:
-        name: "{{apache2_service}}"
-        state: restarted
-      changed_when: false
+    # - name: Ensure new configuration is picked out
+    #   service:
+    #     name: "{{apache2_service}}"
+    #     state: restarted
+    #   changed_when: false
 
     - name: Dump host variables for role
       template: src=config.yml.j2 dest={{goss_test_variables}}

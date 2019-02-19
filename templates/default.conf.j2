@@ -9,6 +9,14 @@
    ErrorLog {{apache2_log_path}}/error.log
    CustomLog {{apache2_log_path}}/access.log combined
 
+   {% if apache2_https_redirect -%}
+   <IfModule rewrite_module>
+      RewriteEngine On
+      RewriteCond %{HTTPS} off
+      RewriteRule ^ https://%{SERVER_NAME}:{{apache2_default_https_port}}%{REQUEST_URI} [R=permanent,L]
+   </IfModule>
+   {% endif -%}
+
    <Directory "{{apache2_base_path}}">
      Options Indexes FollowSymLinks
      AllowOverride None
