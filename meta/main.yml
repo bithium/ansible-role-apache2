@@ -19,7 +19,6 @@ galaxy_info:
         - testing
     - name: Ubuntu
       versions:
-        - 14.04
         - 16.04
         - 18.04
 
