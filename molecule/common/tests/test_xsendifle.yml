@@ -1,0 +1,19 @@
+# Molecule managed
+---
+
+http:
+  https://localhost:{{.Vars.apache2.ports.https}}/download?path=notfound.txt:
+    # required attributes
+    status: 404
+    # optional attributes
+    allow-insecure: true
+    timeout: 1000
+
+  https://localhost:{{.Vars.apache2.ports.https}}/download?path=hello.txt:
+    # required attributes
+    status: 200
+    # optional attributes
+    allow-insecure: true
+    timeout: 1000
+    body:
+      - Hello World !!

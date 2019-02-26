@@ -35,11 +35,25 @@
       {{apache2_certificate_key_paths[ansible_os_family]}}
 
     apache2_os_packages:
-      Alpine:
+      apk:
+        - apache2-mod-wsgi
         - apache2-ssl
+        - py2-pip
+      apt:
+        - libapache2-mod-wsgi
+        - libapache2-mod-xsendfile
+        - python-pip
+      pkgin:
+        - ap24-xsendfile
+        - py37-ap24-mod_wsgi
+        - py37-pip
 
     apache2_packages: >-
-      {{apache2_os_packages[ansible_os_family] | default([])}}
+      {{apache2_os_packages[ansible_pkg_mgr] | default([])}}
+
+    apache2_modules:
+      - wsgi
+      - xsendfile
 
   vars_files:
     - goss.yml
@@ -54,11 +68,41 @@
         content: 'Ansible Configured Apache2 server package'
         dest: "{{apache2_base_path}}/index.html"
 
-    # - name: Ensure new configuration is picked out
-    #   service:
-    #     name: "{{apache2_service}}"
-    #     state: restarted
-    #   changed_when: false
+    - name: Install required python packages
+      pip:
+        name: xsendfile
+        executable: pip
+
+    - name: Install helper script
+      template:
+        src: xsendfile.wsgi
+        dest: "{{apache2_base_path}}"
+
+    - name: Configure apache2 to serve the application
+      copy:
+        dest: "{{apache2_config_enabled_path}}/test_xsendfile.conf"
+        content: |
+          WSGIScriptAlias /download {{apache2_base_path}}/xsendfile.wsgi
+
+          <IfModule xsendfile_module>
+             XSendFile on
+             XSendFilePath "{{apache2_base_path}}"
+          </IfModule>
+      notify: restart apache2
+
+    - name: Create help file for testing
+      copy:
+        dest: "{{apache2_base_path}}/hello.txt"
+        content:
+          Hello World !!
+
+    - name: Create link to apache WSGI module
+      file:
+        src: /opt/local/lib/python3.7/site-packages/mod_wsgi/server/mod_wsgi-py37.so
+        dest: /opt/local/lib/httpd/mod_wsgi.so
+        state: link
+      when: ansible_distribution == 'SmartOS'
+      notify: restart apache2
 
     - name: Dump host variables for role
       template: src=config.yml.j2 dest={{goss_test_variables}}
