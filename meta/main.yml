@@ -23,6 +23,7 @@ galaxy_info:
         - 18.04
 
   galaxy_tags:
-    - apache2 webserver
+    - apache2
+    - webserver
 
 dependencies: []

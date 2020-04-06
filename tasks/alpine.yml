@@ -20,7 +20,7 @@
           - tar
 
     - name: Install required build packages
-      package: name={{apache2_xsendfile_packages}}
+      package: name={{ apache2_xsendfile_packages }}
       changed_when: false
 
     - name: Download module source
@@ -42,7 +42,7 @@
         creates: /usr/lib/apache2/mod_xsendfile.so
 
     - name: Remove required build packages
-      package: name={{apache2_xsendfile_packages}} state=absent
+      package: name={{ apache2_xsendfile_packages }} state=absent
       changed_when: false
 
 - include_tasks: other.yml
@@ -57,7 +57,7 @@
 
 - name: Tweak SSL distribution configuration
   lineinfile:
-    path: "{{apache2_config_path}}/conf.d/ssl.conf"
+    path: "{{ apache2_config_path }}/conf.d/ssl.conf"
     regexp: 'Listen 443'
     state: absent
   when: "'ssl' in apache2_modules"

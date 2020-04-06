@@ -2,23 +2,23 @@
 
 - name: Create configuration paths
   file:
-    path: "{{item}}"
+    path: "{{ item }}"
     owner: root
     group: root
     state: directory
   loop:
-    - "{{apache2_sites_available_path}}"
-    - "{{apache2_modules_available_path}}"
-    - "{{apache2_config_available_path}}"
-    - "{{apache2_sites_enabled_path}}"
-    - "{{apache2_modules_enabled_path}}"
-    - "{{apache2_config_enabled_path}}"
+    - "{{ apache2_sites_available_path }}"
+    - "{{ apache2_modules_available_path }}"
+    - "{{ apache2_config_available_path }}"
+    - "{{ apache2_sites_enabled_path }}"
+    - "{{ apache2_modules_enabled_path }}"
+    - "{{ apache2_config_enabled_path }}"
 
 - name: Ensure configuration files are included
   lineinfile:
-    path: "{{apache2_config_file}}"
-    regexp: '{{item.path}}/\*\.{{item.ext}}'
-    line: "IncludeOptional {{apache2_config_path}}/{{item.path}}/*.{{item.ext}}"
+    path: "{{ apache2_config_file }}"
+    regexp: '{{ item.path }}/\*\.{{ item.ext }}'
+    line: "IncludeOptional {{ apache2_config_path }}/{{ item.path }}/*.{{ item.ext }}"
   loop:
     - path: mods-enabled
       ext: load
@@ -31,27 +31,27 @@
 
 - name: Remove Listen directives from main configuration file
   lineinfile:
-    path: "{{apache2_config_file}}"
+    path: "{{ apache2_config_file }}"
     regexp: '^Listen'
     state: absent
 
 - name: Add include for ports.conf file
   lineinfile:
-    path: "{{apache2_config_file}}"
-    line: "Include {{apache2_config_path}}/ports.conf"
+    path: "{{ apache2_config_file }}"
+    line: "Include {{ apache2_config_path }}/ports.conf"
 
 - name: Create module load configuration file
   copy:
-    dest: "{{apache2_modules_available_path}}/{{item}}.load"
+    dest: "{{ apache2_modules_available_path }}/{{ item }}.load"
     content: |
-      <IfModule !{{item}}_module>
-        LoadModule {{item}}_module {{apache2_lib_path}}/mod_{{item}}.so
+      <IfModule !{{ item }}_module>
+        LoadModule {{ item }}_module {{ apache2_lib_path }}/mod_{{ item }}.so
       </IfModule>
-  loop: "{{apache2_modules}}"
+  loop: "{{ apache2_modules }}"
 
 - name: Enable module load file
   file:
-    src: "{{apache2_modules_available_path}}/{{item}}.load"
-    dest: "{{apache2_modules_enabled_path}}/{{item}}.load"
+    src: "{{ apache2_modules_available_path }}/{{ item }}.load"
+    dest: "{{ apache2_modules_enabled_path }}/{{ item }}.load"
     state: link
-  loop: "{{apache2_modules}}"
+  loop: "{{ apache2_modules }}"

@@ -2,7 +2,7 @@
 
 - name: Enable modules
   apache2_module:
-    name: "{{item}}"
-  loop: "{{apache2_modules}}"
+    name: "{{ item }}"
+  loop: "{{ apache2_modules }}"
   when: apache2_modules is defined
   notify: restart apache2

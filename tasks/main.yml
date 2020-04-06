@@ -2,17 +2,17 @@
 # tasks file for apache2
 
 - name: Include OS specific configuration values
-  include_vars: "{{lookup('first_found', params)}}"
+  include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
-        - "{{ansible_distribution | lower}}.yml"
-        - "{{ansible_os_family | lower}}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
       paths:
         - vars
 
 - name: Install required packages
-  package: name={{apache2_packages_default | union(apache2_packages)}}
+  package: name={{ apache2_packages_default | union(apache2_packages) }}
 
 - name: Add required modules to list (HTTP to HTTPS redirect)
   set_fact:
@@ -24,12 +24,12 @@
     apache2_modules: "{{ apache2_modules | union(['ssl', 'socache_shmcb']) }}"
   when: apache2_create_default_ssl
 
-- include_tasks: "{{lookup('first_found', params)}}"
+- include_tasks: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
-        - "{{ansible_distribution | lower}}.yml"
-        - "{{ansible_os_family | lower}}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
         - other.yml
       paths:
         - tasks
@@ -37,50 +37,50 @@
 - name: Configure listen ports
   template:
     src: ports.conf.j2
-    dest: "{{apache2_config_path}}/ports.conf"
+    dest: "{{ apache2_config_path }}/ports.conf"
   notify: restart apache2
 
 - name: Add ansible configuration
   template:
     src: ansible.conf.j2
-    dest: "{{apache2_config_enabled_path}}/99_ansible.conf"
+    dest: "{{ apache2_config_enabled_path }}/99_ansible.conf"
   notify: restart apache2
 
 - name: Create default HTTP site
   template:
     src: default.conf.j2
-    dest: "{{apache2_default_host_path}}"
+    dest: "{{ apache2_default_host_path }}"
   when: apache2_create_default
 
 - name: Create default HTTPS site
   template:
     src: default-ssl.conf.j2
-    dest: "{{apache2_default_ssl_host_path}}"
+    dest: "{{ apache2_default_ssl_host_path }}"
   when: apache2_create_default_ssl
 
 - name: Create document root
   file:
-    path: "{{apache2_base_path}}"
+    path: "{{ apache2_base_path }}"
     state: directory
-    owner: "{{apache2_user}}"
-    group: "{{apache2_group}}"
+    owner: "{{ apache2_user }}"
+    group: "{{ apache2_group }}"
   when: apache2_create_default or apache2_create_default_ssl
 
 - name: Enable default HTTP site
   file:
-    src: "{{apache2_default_host_path}}"
-    dest: "{{apache2_sites_enabled_path}}/000-default.conf"
+    src: "{{ apache2_default_host_path }}"
+    dest: "{{ apache2_sites_enabled_path }}/000-default.conf"
     state: link
   when: apache2_create_default
 
 - name: Enable default HTTPS site
   file:
-    src: "{{apache2_default_ssl_host_path}}"
-    dest: "{{apache2_sites_enabled_path}}/000-default_ssl.conf"
+    src: "{{ apache2_default_ssl_host_path }}"
+    dest: "{{ apache2_sites_enabled_path }}/000-default_ssl.conf"
     state: link
   when: apache2_create_default_ssl
 
 - name: Enable Apache2 service
   service:
-    name: "{{apache2_service}}"
+    name: "{{ apache2_service }}"
     enabled: true

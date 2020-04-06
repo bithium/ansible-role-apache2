@@ -29,10 +29,10 @@
       Solaris: /opt/local/etc/ssl/httpd/server.key
 
     apache2_certificate_file: >-
-      {{apache2_certificate_paths[ansible_os_family]}}
+      {{ apache2_certificate_paths[ansible_os_family] }}
 
     apache2_certificate_key_file: >-
-      {{apache2_certificate_key_paths[ansible_os_family]}}
+      {{ apache2_certificate_key_paths[ansible_os_family] }}
 
     apache2_os_packages:
       apk:
@@ -49,7 +49,7 @@
         - py37-pip
 
     apache2_packages: >-
-      {{apache2_os_packages[ansible_pkg_mgr] | default([])}}
+      {{ apache2_os_packages[ansible_pkg_mgr] | default([]) }}
 
     apache2_modules:
       - wsgi
@@ -66,7 +66,7 @@
     - name: Create default index page
       copy:
         content: 'Ansible Configured Apache2 server package'
-        dest: "{{apache2_base_path}}/index.html"
+        dest: "{{ apache2_base_path }}/index.html"
 
     - name: Install required python packages
       pip:
@@ -76,23 +76,23 @@
     - name: Install helper script
       template:
         src: xsendfile.wsgi
-        dest: "{{apache2_base_path}}"
+        dest: "{{ apache2_base_path }}"
 
     - name: Configure apache2 to serve the application
       copy:
-        dest: "{{apache2_config_enabled_path}}/test_xsendfile.conf"
+        dest: "{{ apache2_config_enabled_path }}/test_xsendfile.conf"
         content: |
-          WSGIScriptAlias /download {{apache2_base_path}}/xsendfile.wsgi
+          WSGIScriptAlias /download {{ apache2_base_path }}/xsendfile.wsgi
 
           <IfModule xsendfile_module>
              XSendFile on
-             XSendFilePath "{{apache2_base_path}}"
+             XSendFilePath "{{ apache2_base_path }}"
           </IfModule>
       notify: restart apache2
 
     - name: Create help file for testing
       copy:
-        dest: "{{apache2_base_path}}/hello.txt"
+        dest: "{{ apache2_base_path }}/hello.txt"
         content:
           Hello World !!
 
@@ -105,4 +105,4 @@
       notify: restart apache2
 
     - name: Dump host variables for role
-      template: src=config.yml.j2 dest={{goss_test_variables}}
+      template: src=config.yml.j2 dest={{ goss_test_variables }}
