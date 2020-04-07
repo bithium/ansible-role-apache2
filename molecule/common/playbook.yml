@@ -42,7 +42,7 @@
       apt:
         - libapache2-mod-wsgi
         - libapache2-mod-xsendfile
-        - python-pip
+        - python-setuptools
       pkgin:
         - ap24-xsendfile
         - py37-ap24-mod_wsgi
