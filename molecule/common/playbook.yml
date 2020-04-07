@@ -71,7 +71,6 @@
     - name: Install required python packages
       pip:
         name: xsendfile
-        executable: pip
 
     - name: Install helper script
       template:
