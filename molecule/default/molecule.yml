@@ -42,8 +42,7 @@ platforms:
       - /tmp
       - /run
       - /run/lock
-    capabilities:
-      - SYS_ADMIN
+    privileged: true
     command: /lib/systemd/systemd
   - name: apache2-debian-testing
     image: debian:testing
