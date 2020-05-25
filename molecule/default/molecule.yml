@@ -44,12 +44,6 @@ platforms:
       - /run/lock
     privileged: true
     command: /lib/systemd/systemd
-  - name: apache2-debian-testing
-    image: debian:testing
-    volumes:
-      - "/mnt/mirrors/debian/testing:/var/cache/apt/archives"
-    privileged: true
-    command: /lib/systemd/systemd
   - name: apache2-ubuntu-16.04
     image: ubuntu:16.04
     volumes:
