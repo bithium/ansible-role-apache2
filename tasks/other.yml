@@ -6,6 +6,7 @@
     owner: root
     group: root
     state: directory
+    mode: 0644
   loop:
     - "{{ apache2_sites_available_path }}"
     - "{{ apache2_modules_available_path }}"
@@ -43,6 +44,7 @@
 - name: Create module load configuration file
   copy:
     dest: "{{ apache2_modules_available_path }}/{{ item }}.load"
+    mode: 0644
     content: |
       <IfModule !{{ item }}_module>
         LoadModule {{ item }}_module {{ apache2_lib_path }}/mod_{{ item }}.so

@@ -33,6 +33,7 @@
       unarchive:
         src: /tmp/mod_xsendfile-v0.12.tar.gz
         dest: /tmp
+        mode: 0644
         remote_src: true
 
     - name: Compile and install module

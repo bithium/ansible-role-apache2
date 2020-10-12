@@ -38,24 +38,28 @@
   template:
     src: ports.conf.j2
     dest: "{{ apache2_config_path }}/ports.conf"
+    mode: 0644
   notify: restart apache2
 
 - name: Add ansible configuration
   template:
     src: ansible.conf.j2
     dest: "{{ apache2_config_enabled_path }}/99_ansible.conf"
+    mode: 0644
   notify: restart apache2
 
 - name: Create default HTTP site
   template:
     src: default.conf.j2
     dest: "{{ apache2_default_host_path }}"
+    mode: 0644
   when: apache2_create_default
 
 - name: Create default HTTPS site
   template:
     src: default-ssl.conf.j2
     dest: "{{ apache2_default_ssl_host_path }}"
+    mode: 0644
   when: apache2_create_default_ssl
 
 - name: Create document root
@@ -64,6 +68,7 @@
     state: directory
     owner: "{{ apache2_user }}"
     group: "{{ apache2_group }}"
+    mode: 0755
   when: apache2_create_default or apache2_create_default_ssl
 
 - name: Enable default HTTP site

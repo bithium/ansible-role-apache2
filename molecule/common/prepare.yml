@@ -38,6 +38,7 @@
           file:
             path: /opt/local/etc/ssl/httpd
             state: directory
+            mode: 0644
 
         - name: Generate the certificate
           command: >

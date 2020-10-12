@@ -62,11 +62,13 @@
     - role: apache2
 
   tasks:
-
     - name: Create default index page
       copy:
         content: 'Ansible Configured Apache2 server package'
         dest: "{{ apache2_base_path }}/index.html"
+        mode: 0644
+        owner: "{{ apache2_user }}"
+        group: "{{ apache2_group }}"
 
     - name: Install required python packages
       pip:
@@ -76,10 +78,14 @@
       template:
         src: xsendfile.wsgi
         dest: "{{ apache2_base_path }}"
+        mode: 0755
+        owner: "{{ apache2_user }}"
+        group: "{{ apache2_group }}"
 
     - name: Configure apache2 to serve the application
       copy:
         dest: "{{ apache2_config_enabled_path }}/test_xsendfile.conf"
+        mode: 0644
         content: |
           WSGIScriptAlias /download {{ apache2_base_path }}/xsendfile.wsgi
 
@@ -92,6 +98,9 @@
     - name: Create help file for testing
       copy:
         dest: "{{ apache2_base_path }}/hello.txt"
+        mode: 0644
+        owner: "{{ apache2_user }}"
+        group: "{{ apache2_group }}"
         content:
           Hello World !!
 
@@ -100,8 +109,11 @@
         src: /opt/local/lib/python3.7/site-packages/mod_wsgi/server/mod_wsgi-py37.so
         dest: /opt/local/lib/httpd/mod_wsgi.so
         state: link
+        mode: 0644
+        owner: "{{ apache2_user }}"
+        group: "{{ apache2_group }}"
       when: ansible_distribution == 'SmartOS'
       notify: restart apache2
 
     - name: Dump host variables for role
-      template: src=config.yml.j2 dest={{ goss_test_variables }}
+      template: src=config.yml.j2 dest={{ goss_test_variables }} mode=0644
