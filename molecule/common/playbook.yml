@@ -38,9 +38,8 @@
       apk:
         - apache2-mod-wsgi
         - apache2-ssl
-        - py2-pip
       apt:
-        - libapache2-mod-wsgi
+        - libapache2-mod-wsgi-py3
         - libapache2-mod-xsendfile
         - python-setuptools
       pkgin:
@@ -73,7 +72,6 @@
     - name: Install required python packages
       pip:
         name: xsendfile
-        executable: "/usr/bin/pip{% if ansible_os_family == 'Alpine' and ansible_facts['distribution_version'] is version('3.11', '>=') %}3{% endif %}"
 
     - name: Install helper script
       template:

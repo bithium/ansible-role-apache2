@@ -18,7 +18,11 @@
 
     - name: Install pip
       when: ansible_os_family == 'Debian'
-      package: name=python-pip
+      package: name=python3-pip
+
+    - name: Install pip
+      when: ansible_os_family == 'Alpine'
+      package: name=py3-pip
 
     - name: Create certificate for testing
       when: ansible_distribution == 'SmartOS'
