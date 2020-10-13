@@ -73,6 +73,7 @@
     - name: Install required python packages
       pip:
         name: xsendfile
+        executable: "/usr/bin/pip{% if ansible_os_family == 'Alpine' and ansible_facts['distribution_version'] is version('3.11', '>=') %}3{% endif %}"
 
     - name: Install helper script
       template:

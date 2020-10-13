@@ -2,7 +2,11 @@
 # Minimal application to test xsendfile module
 #
 
-from cgi import parse_qs
+try:
+  from cgi import parse_qs
+except ImportError:
+  from urllib.parse import parse_qs
+
 from xsendfile import XSendfileApplication
 
 DOCUMENT_SENDING_APP = XSendfileApplication("{{apache2_base_path}}")
