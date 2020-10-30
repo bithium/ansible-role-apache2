@@ -6,6 +6,7 @@
     get_checksum: false
   register: apache2_xsendfile_module
   when: "'xsendfile' in apache2_modules"
+
 - name: Compile and install xsendfile module
   when:
     - "'xsendfile' in apache2_modules"
