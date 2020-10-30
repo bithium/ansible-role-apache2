@@ -30,11 +30,18 @@
     - path: sites-enabled
       ext: conf
 
-- name: Remove Listen directives from main configuration file
+- name: Remove `Listen` directives from main configuration file
   lineinfile:
     path: "{{ apache2_config_file }}"
     regexp: '^Listen'
     state: absent
+
+- name: Remove `LoadModule` for `mpm_` modules
+  lineinfile:
+    path: "{{ apache2_config_file }}"
+    regexp: 'LoadModule\s+mpm_'
+    state: absent
+  when: apache2_modules | regex_search('mpm_')
 
 - name: Add include for ports.conf file
   lineinfile:
