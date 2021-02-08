@@ -20,6 +20,8 @@ Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml` and `vars/main.yml`):
 
+### Default variables
+
  * Packages to install for each OS:
 
    ```yaml
@@ -27,51 +29,70 @@ Available variables are listed below, along with default values (see `defaults/m
      - apache2
    ```
 
- * Service name in each OS: `apache2_service: apache2`
-
- * User used to run the server: `apache2_user: www-data`
-
- * Group used to run the server: `apache2_group: www-data`
-
- * Apache 2 configuration path: `apache2_config_path: "/etc/{{apache2_service}}"`
-
- * Path to the available sites:
-
-   `apache2_sites_available_path: "{{apache2_config_path}}/sites-available"`
-
- * Path to the available modules:
-
-   `apache2_modules_available_path: "{{apache2_config_path}}/modules-available"`
-
- * Path to the enabled sites:
-
-   `apache2_sites_enabled_path: "{{apache2_config_path}}/sites-enabled"`
-
- * Path to the enabled modules:
-
-   `apache2_modules_enabled_path: "{{apache2_config_path}}/modules-enabled"`
-
- * Path to the default host file:
-
-   `apache2_default_host_path: "{{apache2_sites_available_path}}/000-default.conf"`
-
- * Path to the default ssl host file:
-
-   `apache2_default_ssl_host_path: "{{apache2_sites_available_path}}/default-ssl.conf"`
-
- * Base path used to serve files: `apache2_base_path: "/var/www/html/"`
-
  * Default port used for HTTP: `apache2_default_http_port: 80`
 
  * Default port used for HTTPS: `apache2_default_https_port: 443`
 
  * Extra ports to listen on: `apache2_extra_ports: []`
 
- * If the default ssl host should be enabled: `apache2_enable_ssl: false`
+ * Create/enable default site: `apache2_create_default: false`
 
- * If the default hosts (HTTP and HTTPS) should be removed: `apache2_remove_default: false`
+ * Create/enable default SSL site: `apache2_create_default: false`
 
- * Apache 2 modules to install: `# apache2_modules: []`
+ * SSL certificate file to use in for the default SSL site (undefined by default): `apache2_certificate_file: `
+
+ * SSL certificate key file to use in for the default SSL site (undefined by default): `apache2_certificate_key_file: `
+
+ * Other Apache 2 modules to install: `# apache2_modules: []`
+
+ * Default production configuration values:
+
+   ```yaml
+   apache2_config_default:
+     - 'ServerSignature Off'
+     - 'ServerTokens Prod'
+   ```
+
+ * Enable HTTP to HTTPS for all sites: `apache2_https_redirect: false`
+
+
+### OS specific variables
+
+ * Available sites configuration path: `apache2_sites_available_path: "{{apache2_config_path}}/sites-available"`
+
+ * Available modules configuration path: `apache2_modules_available_path: "{{apache2_config_path}}/mods-available"`
+
+ * Available configurations path: `apache2_config_available_path: "{{apache2_config_path}}/conf-available"`
+
+ * Default host configuration path: `apache2_default_host_path: "{{apache2_sites_available_path}}/000-default.conf"`
+
+ * Default SSL host configuration path: `apache2_default_ssl_host_path: "{{apache2_sites_available_path}}/000-default_ssl.conf"`
+
+ * Enabled sites configuration path: `apache2_sites_enabled_path: "{{apache2_config_path}}/sites-enabled"`
+
+ * Enabled modules configuration path: `apache2_modules_enabled_path: "{{apache2_config_path}}/mods-enabled"`
+
+ * Enabled configurations path: `apache2_config_enabled_path: "{{apache2_config_path}}/conf-enabled"`
+
+ * Custom configuration to deploy: `apache2_config: "{{apache2_config_default}}"`
+
+ * Apache2 package for the given OS: `apache2_packages_default`
+
+ * Service name in each OS: `apache2_service: apache2`
+
+ * User used to run the server: `apache2_user`
+
+ * Group used to run the server: `apache2_group`
+
+ * Apache 2 configuration path: `apache2_config_path: "/etc/{{apache2_service}}"`
+
+ * Apache 2 main configuration file path: `apache2_config_file`
+
+ * Apache 2 library path: `apache2_lib_path`
+
+ * Apache 2 logs path: `apache2_log_path`
+
+ * Base path used to serve files: `apache2_base_path`
 
 Dependencies
 ------------
