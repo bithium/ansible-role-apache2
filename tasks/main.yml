@@ -14,6 +14,8 @@
         - "{{ role_path }}/vars"
   loop_control:
     loop_var: config_file
+  tags:
+    - always
 
 - name: Install required packages
   package: name={{ apache2_packages_default | union(apache2_packages) }}
