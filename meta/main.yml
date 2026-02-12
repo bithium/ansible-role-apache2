@@ -1,25 +1,14 @@
 ---
 galaxy_info:
+  role_name: apache2
+  namespace: bithium
   author: Filipe Alves
   description: This role installs and setups [Apache Webserver](https://httpd.apache.org/) into your system.
   company: Bithium S.A. (https://www.bithium.com)
 
   license: Apache 2.0
 
-  min_ansible_version: 2.10
-
-  platforms:
-    - name: Alpine
-      version:
-        - 3.11
-        - 3.12
-    - name: Debian
-      version:
-        - stable
-    - name: Ubuntu
-      versions:
-        - 18.04
-        - 20.04
+  min_ansible_version: "2.10"
 
   galaxy_tags:
     - apache2

@@ -9,7 +9,7 @@ apache2_user: www
 apache2_group: www
 
 apache2_config_path: /opt/local/etc/httpd
-apache2_config_file: "{{apache2_config_path}}/httpd.conf"
+apache2_config_file: "{{ apache2_config_path }}/httpd.conf"
 
 apache2_lib_path: lib/httpd
 apache2_log_path: /var/log/httpd

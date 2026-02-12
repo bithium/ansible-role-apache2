@@ -1,12 +1,11 @@
 ---
-
 - name: Create configuration paths
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     owner: root
     group: root
     state: directory
-    mode: 0644
+    mode: "0644"
   loop:
     - "{{ apache2_sites_available_path }}"
     - "{{ apache2_modules_available_path }}"
@@ -16,9 +15,9 @@
     - "{{ apache2_config_enabled_path }}"
 
 - name: Ensure configuration files are included
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ apache2_config_file }}"
-    regexp: '{{ item.path }}/\*\.{{ item.ext }}'
+    regexp: "{{ item.path }}/\\*\\.{{ item.ext }}"
     line: "IncludeOptional {{ apache2_config_path }}/{{ item.path }}/*.{{ item.ext }}"
   loop:
     - path: mods-enabled
@@ -31,27 +30,27 @@
       ext: conf
 
 - name: Remove `Listen` directives from main configuration file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ apache2_config_file }}"
-    regexp: '^Listen'
+    regexp: "^Listen"
     state: absent
 
 - name: Remove `LoadModule` for `mpm_` modules
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ apache2_config_file }}"
-    regexp: 'LoadModule\s+mpm_'
+    regexp: "LoadModule\\s+mpm_"
     state: absent
   when: apache2_modules | regex_search('mpm_')
 
 - name: Add include for ports.conf file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ apache2_config_file }}"
     line: "Include {{ apache2_config_path }}/ports.conf"
 
 - name: Create module load configuration file
-  copy:
+  ansible.builtin.copy:
     dest: "{{ apache2_modules_available_path }}/{{ item }}.load"
-    mode: 0644
+    mode: "0644"
     content: |
       <IfModule !{{ item }}_module>
         LoadModule {{ item }}_module {{ apache2_lib_path }}/mod_{{ item }}.so
@@ -59,7 +58,7 @@
   loop: "{{ apache2_modules }}"
 
 - name: Enable module load file
-  file:
+  ansible.builtin.file:
     src: "{{ apache2_modules_available_path }}/{{ item }}.load"
     dest: "{{ apache2_modules_enabled_path }}/{{ item }}.load"
     state: link

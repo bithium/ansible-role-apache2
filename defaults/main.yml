@@ -2,12 +2,10 @@
 # defaults file for apache2
 
 apache2_packages: []
-
 apache2_default_http_port: 80
 apache2_default_https_port: 443
 
 apache2_extra_ports: []
-
 apache2_create_default: false
 apache2_create_default_ssl: false
 
@@ -15,9 +13,8 @@ apache2_create_default_ssl: false
 # apache2_certificate_key_file:
 
 apache2_modules: []
-
 apache2_config_default:
-  - 'ServerSignature Off'
-  - 'ServerTokens Prod'
+  - "ServerSignature Off"
+  - "ServerTokens Prod"
 
 apache2_https_redirect: false

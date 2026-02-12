@@ -1,7 +1,6 @@
 ---
-
 - name: Check if xsendfile module is available
-  stat:
+  ansible.builtin.stat:
     path: /usr/lib/apache2/mod_xsendfile.so
     get_checksum: false
   register: apache2_xsendfile_module
@@ -13,7 +12,7 @@
     - not apache2_xsendfile_module.stat.exists
   block:
     - name: Set packages for xsendfile build
-      set_fact:
+      ansible.builtin.set_fact:
         apache2_xsendfile_packages:
           - apache2-dev
           - gcc
@@ -21,45 +20,50 @@
           - tar
 
     - name: Install required build packages
-      package: name={{ apache2_xsendfile_packages }}
+      ansible.builtin.package:
+        name: "{{ apache2_xsendfile_packages }}"
       changed_when: false
 
     - name: Download module source
-      get_url:
+      ansible.builtin.get_url:
         url: https://github.com/nmaier/mod_xsendfile/archive/0.12.tar.gz
         dest: /tmp/mod_xsendfile-v0.12.tar.gz
         checksum: md5:39d8642458473eb11bf255bcc37b891b
+        mode: "0644"
 
     - name: Extract module source
-      unarchive:
+      ansible.builtin.unarchive:
         src: /tmp/mod_xsendfile-v0.12.tar.gz
         dest: /tmp
-        mode: 0644
+        mode: "0644"
         remote_src: true
 
     - name: Compile and install module
-      command: apxs -ci mod_xsendfile.c
+      ansible.builtin.command: apxs -ci mod_xsendfile.c
       args:
         chdir: /tmp/mod_xsendfile-0.12
         creates: /usr/lib/apache2/mod_xsendfile.so
 
     - name: Remove required build packages
-      package: name={{ apache2_xsendfile_packages }} state=absent
+      ansible.builtin.package:
+        name: "{{ apache2_xsendfile_packages }}"
+        state: absent
       changed_when: false
 
-- include_tasks: other.yml
+- name: Run extra common tasks
+  ansible.builtin.include_tasks: other.yml
 
 - name: Tweak init file for Apache2 on Alpine
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/init.d/apache2
-    regexp: '.+need net'
+    regexp: ".+need net"
     state: absent
   notify: restart apache2
   when: ansible_connection == 'docker'
 
 - name: Tweak SSL distribution configuration
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ apache2_config_path }}/conf.d/ssl.conf"
-    regexp: 'Listen 443'
+    regexp: "Listen 443"
     state: absent
   when: "'ssl' in apache2_modules"

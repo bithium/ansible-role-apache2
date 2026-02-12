@@ -1,7 +1,6 @@
 ---
-
 - name: Enable modules
-  apache2_module:
+  community.general.apache2_module:
     name: "{{ item }}"
   loop: "{{ apache2_modules }}"
   when: apache2_modules is defined
