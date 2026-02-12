@@ -1,21 +1,8 @@
 ---
 # tasks file for apache2
 
-- name: Include OS specific configuration values
-  ansible.builtin.include_vars: "{{ config_file }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
-        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution | lower }}.yml"
-        - "{{ ansible_os_family | lower }}.yml"
-        - "{{ ansible_system | lower }}.yml"
-      paths:
-        - "{{ role_path }}/vars"
-  loop_control:
-    loop_var: config_file
-  tags:
-    - always
+- name: Include OS-specific variables
+  ansible.builtin.include_tasks: vars.yml
 
 - name: Install required packages
   ansible.builtin.package:
